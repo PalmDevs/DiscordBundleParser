@@ -1,7 +1,7 @@
 export function debounce<
     F extends (...args: any) => any,
 >(func: F, delay = 300): (...args: Parameters<F>) => undefined {
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
 
     return function (...args: Parameters<F>): undefined {
         clearTimeout(timeout);
@@ -13,7 +13,7 @@ export function debounceAsync<
     F extends (...args: any) => Promise<any>,
 >(func: F, delay = 300): (...args: Parameters<F>) => void {
     // for some godforsaken reason it errors here if its let, but not a few lines up
-    var timeout: NodeJS.Timeout;
+    var timeout: number;
     let running = false;
 
     return function (...args: Parameters<F>): undefined {

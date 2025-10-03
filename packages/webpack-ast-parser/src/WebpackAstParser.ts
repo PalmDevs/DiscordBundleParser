@@ -138,13 +138,17 @@ export class WebpackAstParser extends AstParser {
      // webpack module contents
      * }
      * ```
+     * @CacheGetter
      */
     @CacheGetter()
     get wreq(): Identifier | undefined {
         return this.findWebpackArg(2);
     }
 
-    /** where {@link WebpackAstParser.wreq this.wreq} is used*/
+    /** 
+     * where {@link WebpackAstParser.wreq this.wreq} is used
+     * @CacheGetter
+     */
     @CacheGetter()
     get uses(): VariableInfo | undefined {
         return this.wreq && this.vars.get(this.wreq);
@@ -152,6 +156,7 @@ export class WebpackAstParser extends AstParser {
 
     /**
      * The module id of the current module
+     * @CacheGetter
      */
     @CacheGetter()
     get moduleId(): string | null {
@@ -163,11 +168,17 @@ export class WebpackAstParser extends AstParser {
         return null;
     }
 
+    /**
+     * @CacheGetter
+     */
     @CacheGetter()
     get moduleCache(): IModuleCache {
         return WebpackAstParser.defaultModuleCache(this);
     }
 
+    /**
+     * @CacheGetter
+     */
     @CacheGetter()
     get moduleDepManager(): IModuleDepManager {
         return WebpackAstParser.defaultModuleDepManager(this);
@@ -224,6 +235,9 @@ export class WebpackAstParser extends AstParser {
         };
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     public getModulesThatThisModuleRequires(): ModuleDeps | null {
         if (!this.wreq || !this.uses)
@@ -662,6 +676,7 @@ export class WebpackAstParser extends AstParser {
      * e.exports = n(moduleId);
      * ```
      * @returns the module ID if it does, undefined otherwise
+     * @Cache
      */
     @Cache()
     doesReExportWholeModule(): string | undefined {
@@ -768,8 +783,9 @@ export class WebpackAstParser extends AstParser {
 
     // TODO: add tests for this func
     /**
-   * @returns a map of exported names to the nodes that they are exported from
-   */
+     * @returns a map of exported names to the nodes that they are exported from
+     * @Cache
+     */
     @Cache()
     getExportMapRaw(): RawExportMap {
         return {
@@ -781,6 +797,7 @@ export class WebpackAstParser extends AstParser {
 
     /**
      * FIXME: this is not in line with {@link getExportMapWreq_d}
+     * @Cache
      */
     @Cache()
     public getExportMapRawWreq_d():
@@ -825,6 +842,9 @@ export class WebpackAstParser extends AstParser {
             .filter((x) => x !== false));
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     public getExportMapRawWreq_e(): ExportMap<Expression> | undefined {
         const wreqE = this.findWreq_e();
@@ -861,6 +881,9 @@ export class WebpackAstParser extends AstParser {
         return Object.fromEntries(exportAssignments);
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     public getExportMapRawWreq_t(): ExportMap<Expression> | undefined {
         const wreqT = this.findWreq_t();
@@ -886,6 +909,9 @@ export class WebpackAstParser extends AstParser {
             .filter((x) => x !== undefined));
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     getExportMap(): RangeExportMap {
         return {
@@ -1079,6 +1105,9 @@ export class WebpackAstParser extends AstParser {
         return uses;
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     getExportMapWreq_t(): RangeExportMap | undefined {
         const wreqT = this.findWreq_t();
@@ -1244,6 +1273,9 @@ export class WebpackAstParser extends AstParser {
     }
 
     // FIXME: handle when there is more than one module.exports assignment, eg e = () => {}; e.foo = () => {};
+    /**
+     * @Cache
+     */
     @Cache()
     getExportMapWreq_e(): RangeExportMap | undefined {
         const wreqE = this.findWreq_e();
@@ -1297,6 +1329,9 @@ export class WebpackAstParser extends AstParser {
         return exports;
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     getExportMapWreq_d(): RangeExportMap | undefined {
         const wreqD = this.findWreq_d();
@@ -1783,6 +1818,9 @@ export class WebpackAstParser extends AstParser {
         return lastHover;
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     findWreq_d():
     | (Omit<CallExpression, "arguments"> & {
@@ -1854,6 +1892,9 @@ export class WebpackAstParser extends AstParser {
         }
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     findWreq_t(): Identifier | undefined {
         return this.findWebpackArg(1);
@@ -1879,6 +1920,9 @@ export class WebpackAstParser extends AstParser {
         return exports ? this.makeRangeFromAstNode(exports.location) : undefined;
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     findWreq_e(): Identifier | undefined {
         return this.findWebpackArg(0);
@@ -1966,6 +2010,7 @@ export class WebpackAstParser extends AstParser {
 
     /**
      * @returns the string of the export if this is the flux dispatcher module, null otherwise
+     * @Cache
      */
     @Cache()
     public isFluxDispatcherModule(): string | undefined {

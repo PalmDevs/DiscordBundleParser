@@ -15,7 +15,6 @@ import { Logger, NoopLogger } from "@vencord-companion/shared/Logger";
 import { FindUse, FunctionNode, IFindType, IReplacement, PatchData, SourcePatch, StringNode, TestFind } from "./types";
 import { tryParseRegularExpressionLiteral } from "./util";
 
-import { readFile } from "node:fs/promises";
 import { DeclarationDomain } from "ts-api-utils";
 import {
     CallExpression,
@@ -55,6 +54,9 @@ export class VencordAstParser extends AstParser {
         return this._path;
     }
 
+    /**
+     * @CacheGetter
+     */
     @CacheGetter()
     public get imports(): Map<Identifier, Import> {
         return this.listImports();
@@ -65,10 +67,9 @@ export class VencordAstParser extends AstParser {
         this._path = path;
     }
 
-    public static async fromPath(path: string) {
-        return new VencordAstParser(await readFile(path, "utf-8"), path);
-    }
-
+    /**
+     * @Cache
+     */
     @Cache()
     private findDefinePlugin(): ObjectLiteralExpression | undefined {
         const define = [...this.imports.values()].find((x) => {
@@ -110,6 +111,9 @@ export class VencordAstParser extends AstParser {
         return nameProp.initializer.text;
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     public getPatches(): SourcePatch[] {
         const definePlugin = this.findDefinePlugin();
@@ -318,6 +322,9 @@ export class VencordAstParser extends AstParser {
         return !!this.findDefinePlugin();
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     public getFinds(): FindUse[] {
         return this.getFindUses()
@@ -349,6 +356,9 @@ export class VencordAstParser extends AstParser {
             .filter((x) => x !== false);
     }
 
+    /**
+     * @Cache
+     */
     @Cache()
     private getFindUses(): WithParent<Identifier, CallExpression>[] {
         const imports = [...this.imports.entries()].flatMap(([k, v]) => {

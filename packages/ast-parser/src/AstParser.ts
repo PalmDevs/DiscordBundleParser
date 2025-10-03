@@ -60,6 +60,9 @@ export class AstParser {
 
     public readonly text: string;
 
+    /**
+     * @CacheGetter
+     */
     @CacheGetter()
     public get sourceFile(): SourceFile {
         return this.createSourceFile();
@@ -67,12 +70,16 @@ export class AstParser {
 
     /**
      * All the variables in the source file
+     * @CacheGetter
      */
     @CacheGetter()
     public get vars(): Map<Identifier, VariableInfo> {
         return collectVariableUsage(this.sourceFile);
     }
 
+    /**
+     * @CacheGetter
+     */
     @CacheGetter()
     public get usesToVars(): Map<Identifier, VariableInfo> {
         const map = new Map<Identifier, VariableInfo>();
@@ -327,6 +334,7 @@ export class AstParser {
      * Create the source file for this parser
      *
      * MUST SET PARENT NODES
+     * @Cache
      */
     @Cache()
     protected createSourceFile(): SourceFile {
@@ -448,12 +456,18 @@ export class AstParser {
     }
 
     // methods copied from vscode-languageserver-node
+    /**
+     * @CacheGetter
+     */
     @CacheGetter()
     private get lineOffsets() {
         return this.computeLineOffsets(true);
     }
 
     @CacheGetter()
+    /**
+     * @CacheGetter
+     */
     public get lineCount() {
         return this.lineOffsets.length;
     }

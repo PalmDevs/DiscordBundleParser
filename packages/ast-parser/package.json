@@ -17,7 +17,8 @@
     "@vencord-companion/shared": "workspace:*"
   },
   "exports": {
-    "./*": "./dist/*.js"
+    "./*": "./dist/*.js",
+    ".": "./dist/index.js"
   },
   "peerDependencies": {
     "@sadan4/devtools-pretty-printer": "catalog:",

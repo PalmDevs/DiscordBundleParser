@@ -29,6 +29,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4
 
   packages/ast-parser:
     dependencies:
