@@ -1,13 +1,4 @@
 import { Format } from "@sadan4/devtools-pretty-printer";
-import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
-import { type Logger, NoopLogger } from "@vencord-companion/shared/Logger";
-import { IPosition, Position } from "@vencord-companion/shared/Position";
-import { Range } from "@vencord-companion/shared/Range";
-
-import { StringifiedModule } from "./StringifiedModule";
-import { Functionish } from "./types";
-import { CharCode, findParent, getTokenAtPosition, isEOL } from "./util";
-
 import { collectVariableUsage, type VariableInfo } from "ts-api-utils";
 import {
     type AssignmentExpression,
@@ -46,6 +37,15 @@ import {
     SyntaxKind,
     type VariableDeclaration,
 } from "typescript";
+
+import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
+import { type Logger, NoopLogger } from "@vencord-companion/shared/Logger";
+import { IPosition, Position } from "@vencord-companion/shared/Position";
+import { Range } from "@vencord-companion/shared/Range";
+
+import { StringifiedModule } from "./StringifiedModule";
+import { Functionish } from "./types";
+import { CharCode, findParent, getTokenAtPosition, isEOL } from "./util";
 
 let logger: Logger = NoopLogger;
 

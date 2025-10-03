@@ -1,12 +1,12 @@
+import { SyntaxKind } from "typescript";
+import { describe, expect, it } from "vitest";
+
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { Position } from "@vencord-companion/shared/Position";
 
 import { AstParser } from "./AstParser";
-
-import { readFileSync } from "fs";
-import { join } from "path";
-
-import { SyntaxKind } from "typescript";
-import { describe, expect, it } from "vitest";
 
 const __dirname = import.meta.dirname;
 
@@ -101,7 +101,7 @@ describe("AstParser", function () {
 });
 
 describe("AstParser - textDocument copied tests", function () {
-    const assert = require("assert") as typeof import("assert");
+    const assert = require("node:assert") as typeof import("assert");
 
     function newDocument(str: string) {
         return new AstParser(str);

@@ -1,20 +1,3 @@
-import {
-    AstParser,
-    findObjectLiteralByKey,
-    findParent,
-    getImportName,
-    getImportSource,
-    Import,
-    isDefaultImport,
-    isInImportStatment,
-    WithParent,
-} from "@vencord-companion/ast-parser";
-import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
-import { Logger, NoopLogger } from "@vencord-companion/shared/Logger";
-
-import { FindUse, FunctionNode, IFindType, IReplacement, PatchData, SourcePatch, StringNode, TestFind } from "./types";
-import { tryParseRegularExpressionLiteral } from "./util";
-
 import { DeclarationDomain } from "ts-api-utils";
 import {
     CallExpression,
@@ -39,6 +22,23 @@ import {
     ScriptTarget,
     transpileModule,
 } from "typescript";
+
+import {
+    AstParser,
+    findObjectLiteralByKey,
+    findParent,
+    getImportName,
+    getImportSource,
+    Import,
+    isDefaultImport,
+    isInImportStatment,
+    WithParent,
+} from "@vencord-companion/ast-parser";
+import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
+import { Logger, NoopLogger } from "@vencord-companion/shared/Logger";
+
+import { FindUse, FunctionNode, IFindType, IReplacement, PatchData, SourcePatch, StringNode, TestFind } from "./types";
+import { tryParseRegularExpressionLiteral } from "./util";
 
 
 let logger: Logger = NoopLogger;

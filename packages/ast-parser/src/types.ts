@@ -6,8 +6,8 @@ export type AnyFunction = FunctionExpression | ArrowFunction;
 export type AssertedType<
     T extends Function,
     E = any,
-> =
-    T extends (a: any) => a is infer R ? R extends E ? R : never : never;
+>
+    = T extends (a: any) => a is infer R ? R extends E ? R : never : never;
 
 export type CBAssertion<U = undefined, N = never> = <
     F extends (n: Node) => n is Node,

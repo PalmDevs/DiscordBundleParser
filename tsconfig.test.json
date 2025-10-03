@@ -8,6 +8,8 @@
         "lib": [
             "ESNext"
         ],
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
     },
     "references": [
         {
@@ -24,7 +26,8 @@
         }
     ],
     "include": [
-        "packages/**/*.test.ts"
+        "packages/**/*.test.ts",
+        "packages/**/__test__/testingUtil.ts"
     ],
     "exclude": [
         "node_modules"

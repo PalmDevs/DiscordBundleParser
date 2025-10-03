@@ -1,6 +1,7 @@
+import { describe, expect, it } from "vitest";
+
 import { Cache, CacheGetter } from "./decorators";
 
-import { describe, expect, it } from "vitest";
 describe("@CacheGetter()", function () {
     const mkTestClass = () => {
         class TestCachingGetters {

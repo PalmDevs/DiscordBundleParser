@@ -1,7 +1,7 @@
-import { getFile } from "./testingUtil";
-import { isWebpackModule } from "./util";
-
 import { describe, expect, it } from "vitest";
+
+import { getFile } from "./__test__/testingUtil";
+import { isWebpackModule } from "./util";
 
 const randomData = getFile("random");
 

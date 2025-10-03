@@ -1,15 +1,16 @@
-import { Position } from "@vencord-companion/shared/Position";
-import { Range } from "@vencord-companion/shared/Range";
-
-import { getFile } from "./testingUtil";
-import { MainDeps, RangeExportMap, Reference } from "./types";
-import { TAssert } from "./util";
-import { WebpackAstParser } from "./WebpackAstParser";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { readdir, readFile } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
 import * as posix from "node:path/posix";
-import { beforeAll, describe, expect, it } from "vitest";
+
+import { Position } from "@vencord-companion/shared/Position";
+import { Range } from "@vencord-companion/shared/Range";
+
+import { getFile } from "./__test__/testingUtil";
+import { Location, MainDeps, RangeExportMap, Reference } from "./types";
+import { TAssert } from "./util";
+import { WebpackAstParser } from "./WebpackAstParser";
 
 const __dirname = import.meta.dirname;
 
@@ -742,10 +743,10 @@ function makeDepsMap(): MainDeps {
         get(target, prop, rec) {
             if (typeof prop === "string" && prop.match(/\d+/)) {
                 if (!Reflect.has(target, prop)) {
-                    const val = ({
+                    const val = {
                         lazyUses: [],
                         syncUses: [],
-                    } satisfies MainDeps[string]);
+                    } satisfies MainDeps[string];
 
                     Reflect.set(target, prop, val, rec);
                     return val;

@@ -1,5 +1,3 @@
-import { AnyFunction, AssertedType, CBAssertion, Functionish, Import, WithParent } from "./types";
-
 import {
     Block,
     DefaultKeyword,
@@ -24,6 +22,8 @@ import {
     SyntaxKind,
     SyntaxList,
 } from "typescript";
+
+import { AnyFunction, AssertedType, CBAssertion, Functionish, Import, WithParent } from "./types";
 
 export const enum CharCode {
     /**

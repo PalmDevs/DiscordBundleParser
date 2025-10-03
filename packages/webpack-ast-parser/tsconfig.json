@@ -4,6 +4,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
+    "lib": [
+      "ES2023"
+    ]
   },
   "references": [
     {
@@ -13,5 +16,9 @@
       "path": "../shared"
     }
   ],
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "./src/__test__",
+    "./src/**.test.ts"
+  ]
 }

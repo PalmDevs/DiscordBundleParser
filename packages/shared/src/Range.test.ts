@@ -1,7 +1,7 @@
+import { assert, describe, expect, it } from "vitest";
+
 import { Position } from "./Position";
 import { Range, zeroRange } from "./Range";
-
-import { assert, describe, expect, it } from "vitest";
 
 describe("zeroRange", function () {
     it("is empty", function () {

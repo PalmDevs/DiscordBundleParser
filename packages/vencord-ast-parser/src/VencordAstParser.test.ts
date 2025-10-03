@@ -1,11 +1,11 @@
-import { VencordAstParser } from "./VencordAstParser";
-
-import { ChildProcess, exec } from "child_process";
-import { Dirent, PathLike, readFileSync } from "fs";
-import { readdir, readFile, stat } from "fs/promises";
-import { join } from "path";
-
 import { assert, describe, expect, it } from "vitest";
+
+import { ChildProcess, exec } from "node:child_process";
+import { Dirent, PathLike, readFileSync } from "node:fs";
+import { readdir, readFile, stat } from "node:fs/promises";
+import { join } from "node:path";
+
+import { VencordAstParser } from "./VencordAstParser";
 
 const __dirname = import.meta.dirname;
 const VENCORD_DIR = join(__dirname, "__test__", ".vencord-source");

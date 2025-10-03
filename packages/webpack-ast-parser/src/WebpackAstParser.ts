@@ -1,37 +1,4 @@
 import { Format } from "@sadan4/devtools-pretty-printer";
-import {
-    AstParser,
-    findObjectLiteralByKey,
-    findParent,
-    findParentLimited,
-    findReturnIdentifier,
-    findReturnPropertyAccessExpression,
-    getLeadingIdentifier,
-    isSyntaxList,
-    lastParent,
-    nonNull,
-} from "@vencord-companion/ast-parser";
-import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
-import { Logger, NoopLogger } from "@vencord-companion/shared/Logger";
-import { Position } from "@vencord-companion/shared/Position";
-import { Range, zeroRange } from "@vencord-companion/shared/Range";
-
-import {
-    AnyExportKey,
-    Definition,
-    ExportMap,
-    ExportRange,
-    IModuleCache,
-    IModuleDepManager,
-    ModuleDeps,
-    RangeExportMap,
-    RawExportMap,
-    RawExportRange,
-    Reference,
-    Store,
-} from "./types";
-import { allEntries, assertNotHover, containsPosition, formatModule, fromEntries } from "./util";
-
 import { isAccessorDeclaration, VariableInfo } from "ts-api-utils";
 import {
     CallExpression,
@@ -68,6 +35,39 @@ import {
     ScriptTarget,
     SourceFile,
 } from "typescript";
+
+import {
+    AstParser,
+    findObjectLiteralByKey,
+    findParent,
+    findParentLimited,
+    findReturnIdentifier,
+    findReturnPropertyAccessExpression,
+    getLeadingIdentifier,
+    isSyntaxList,
+    lastParent,
+    nonNull,
+} from "@vencord-companion/ast-parser";
+import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
+import { Logger, NoopLogger } from "@vencord-companion/shared/Logger";
+import { Position } from "@vencord-companion/shared/Position";
+import { Range, zeroRange } from "@vencord-companion/shared/Range";
+
+import {
+    AnyExportKey,
+    Definition,
+    ExportMap,
+    ExportRange,
+    IModuleCache,
+    IModuleDepManager,
+    ModuleDeps,
+    RangeExportMap,
+    RawExportMap,
+    RawExportRange,
+    Reference,
+    Store,
+} from "./types";
+import { allEntries, assertNotHover, containsPosition, formatModule, fromEntries } from "./util";
 
 let logger: Logger = NoopLogger;
 
@@ -351,7 +351,7 @@ export class WebpackAstParser extends AstParser {
         if (!this.uses)
             throw new Error("Wreq isn't used anywhere");
 
-        const selectedNode: Node = this.getTokenAtOffset(this.offsetAt(position));
+        const selectedNode: Node | undefined = this.getTokenAtOffset(this.offsetAt(position));
 
         if (selectedNode && isNumericLiteral(selectedNode)) {
             return this.generateDirectModuleDefinition(selectedNode);
@@ -866,7 +866,7 @@ export class WebpackAstParser extends AstParser {
             .map((x) => x.location)
             .map((x) => {
                 let name: string | symbol | undefined
-          = this.flattenPropertyAccessExpression(lastParent(x, isPropertyAccessExpression))?.[2]?.text;
+                    = this.flattenPropertyAccessExpression(lastParent(x, isPropertyAccessExpression))?.[2]?.text;
 
                 name ||= WebpackAstParser.SYM_CJS_DEFAULT;
 
@@ -1523,8 +1523,7 @@ export class WebpackAstParser extends AstParser {
                 }
                 ret.fluxEvents[prop.name.getText()] = [prop.initializer];
                 if (isIdentifier(prop.initializer)) {
-                    const trail = this.unwrapVariableDeclaration(prop.initializer)
-                        ?.toReversed();
+                    const trail = this.unwrapVariableDeclaration(prop.initializer)?.toReversed();
 
                     if (trail)
                         ret.fluxEvents[prop.name.getText()].push(...trail);
@@ -1874,9 +1873,9 @@ export class WebpackAstParser extends AstParser {
                  * consider {@link this.getVarInfoFromUse}
                 */
                 const [exportDec]
-          = [...this.vars.entries()].find(([, v]) => {
-              return v.uses.some((use) => use.location === exportVar);
-          }) ?? [];
+                    = [...this.vars.entries()].find(([, v]) => {
+                        return v.uses.some((use) => use.location === exportVar);
+                    }) ?? [];
 
                 if (!exportDec)
                     return undefined;
@@ -1976,7 +1975,7 @@ export class WebpackAstParser extends AstParser {
             throw new Error(`Export ${exportName.toString()} not found in module ${this.moduleId}`);
         }
 
-        type SearchItem = (readonly [parser: WebpackAstParser, moduleId: string, exportName: AnyExportKey]);
+        type SearchItem = readonly [parser: WebpackAstParser, moduleId: string, exportName: AnyExportKey];
 
         const toSearch: SearchItem[]
             = this.getModulesThatRequireThisModule()

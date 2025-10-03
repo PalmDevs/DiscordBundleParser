@@ -3,12 +3,13 @@ import { Linter } from "eslint";
 import { defineConfig } from "eslint/config";
 import { type ESLintRules as IESLintRules } from "eslint/rules";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import TSEslint from "typescript-eslint";
 
 // cursed
 
-type _tsLintRules = typeof import("./node_modules/@typescript-eslint/eslint-plugin/dist/rules");
+type _tsLintRules = typeof import("./node_modules/@typescript-eslint/eslint-plugin/dist/rules/index.js");
 
 type ITSLintRules = {
     [K in keyof _tsLintRules & string as `@typescript-eslint/${K}`]: _tsLintRules[K] extends { defaultOptions: infer Options extends any[]; } ? Linter.RuleEntry<Options> : never;
@@ -231,7 +232,7 @@ const TSLintRules: Partial<ITSLintRules> = {
     "@typescript-eslint/return-await": ["error", "error-handling-correctness-only"],
 };
 
-const styleRules: Partial<IStyleRules> = {
+const StyleRules: Partial<IStyleRules> = {
     "@stylistic/array-bracket-newline": [
         "error",
         {
@@ -380,7 +381,7 @@ const styleRules: Partial<IStyleRules> = {
     "@stylistic/newline-per-chained-call": [
         "error",
         {
-            ignoreChainWithDepth: 1,
+            ignoreChainWithDepth: 2,
         },
     ],
     "@stylistic/no-confusing-arrow": [
@@ -584,13 +585,14 @@ const styleRules: Partial<IStyleRules> = {
 
 const extensions = "{js,mjs,cjs,jsx,mjsx,cjsx,ts,mts,cts,tsx,mtsx,ctsx}";
 
-export default defineConfig({ ignores: ["dist", "node_modules", "**/__test__/**", "packages/vencord-ast-parser/src/__test__/.vencord-source/**"] }, {
+export default defineConfig({ ignores: ["**/dist", "node_modules", "**/__test__/**", "packages/vencord-ast-parser/src/__test__/.vencord-source/**"] }, {
     files: [`eslint.config.${extensions}`, `packages/**/*.${extensions}`],
     plugins: {
         "@stylistic": stylistic as any,
         "@typescript-eslint": TSEslint.plugin,
         "simple-import-sort": simpleImportSort,
         "unused-imports": unusedImports,
+        unicorn: eslintPluginUnicorn,
     },
     languageOptions: {
         parser: TSEslint.parser,
@@ -602,8 +604,7 @@ export default defineConfig({ ignores: ["dist", "node_modules", "**/__test__/**"
     rules: {
         ...ESLintRules,
         ...TSLintRules,
-        // Style Rules
-        ...styleRules,
+        ...StyleRules,
         "unused-imports/no-unused-imports": "error",
         "unused-imports/no-unused-vars": [
             "warn",
@@ -619,11 +620,14 @@ export default defineConfig({ ignores: ["dist", "node_modules", "**/__test__/**"
             "error",
             {
                 groups: [
+                    ["^"],
+                    ["^node:.*$"],
+                    ["^@vencord-companion/"],
                     ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$", "^\\.\\.(?!/?$)", "^\\.\\./?$"],
-                    ["^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)"],
                 ],
             },
         ],
         "simple-import-sort/exports": "error",
+        "unicorn/prefer-node-protocol": ["error"],
     },
 });

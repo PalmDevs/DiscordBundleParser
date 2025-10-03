@@ -1,7 +1,3 @@
-import { FunctionNode, RegexNode, StringNode } from "./types";
-
-import { basename } from "path";
-
 import {
     CompilerOptions,
     createPrinter,
@@ -17,6 +13,10 @@ import {
     sys,
     transpileModule,
 } from "typescript";
+
+import { basename } from "node:path";
+
+import { FunctionNode, RegexNode, StringNode } from "./types";
 
 
 export function tryParseStringLiteral(node: Node): StringNode | null {

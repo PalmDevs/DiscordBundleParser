@@ -1,6 +1,6 @@
-import { areVersionsIncompatible, compareVersions, debounce, SemVerVersion } from "./util";
-
 import { describe, expect, it, vi } from "vitest";
+
+import { areVersionsIncompatible, compareVersions, debounce, SemVerVersion } from "./util";
 
 describe("debounce()", function () {
     it("resets the timeout correctly", function () {

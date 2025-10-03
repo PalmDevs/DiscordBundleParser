@@ -1,6 +1,6 @@
 import { Range } from "@vencord-companion/shared/Range";
-export type AnyFindType =
-    `find${"Component" | "ByProps" | "Store" | "ByCode" | "ModuleId" | "ComponentByCode" | ""}${"Lazy" | ""}`;
+export type AnyFindType
+    = `find${"Component" | "ByProps" | "Store" | "ByCode" | "ModuleId" | "ComponentByCode" | ""}${"Lazy" | ""}`;
 
 export type StringNode = {
     type: "string";
@@ -30,30 +30,29 @@ export type IReplacement = {
     match: StringNode | RegexNode;
     replace: StringNode | FunctionNode;
 };
-export type IFindType = (
-  | {
-      findType: "string";
-      /**
+export type IFindType
+    = | {
+        findType: "string";
+        /**
                * the find string
                */
-      find: string;
-  }
-  | {
-      findType: "regex";
-      /**
+        find: string;
+    }
+    | {
+        findType: "regex";
+        /**
                * stringified regex
                */
-      find: string;
-  }
-);
+        find: string;
+    };
 export type PatchData = IFindType & {
     replacement: IReplacement[];
 };
 /**
  * a parsed patch, as it appears in a source file
  */
-export type SourcePatch = (PatchData & { range: Range;
-    origIndex: number; });
+export type SourcePatch = PatchData & { range: Range;
+    origIndex: number; };
 export type FindUse = {
     range: Range;
     use: TestFind;
