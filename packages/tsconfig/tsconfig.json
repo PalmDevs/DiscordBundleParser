@@ -18,7 +18,7 @@
         "experimentalDecorators": true,
         // TODO: remove
         "noImplicitAny": false,
-        "preserveSymlinks": true,
+        "preserveSymlinks": false,
         "types": []
     },
     "exclude": [
