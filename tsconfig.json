@@ -13,7 +13,7 @@
             "path": "packages/webpack-ast-parser",
         },
         {
-            "path": "./tsconfig.scripts.json"
+            "path": "./tsconfig.config.json"
         },
         {
             "path": "./tsconfig.test.json"
