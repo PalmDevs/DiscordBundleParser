@@ -8,8 +8,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "build": "tsc -b",
-    "pack-all": "pnpm build && pnpm -r --filter !. pack"
+    "build-all": "tsc -b",
+    "pack-all": "pnpm build-all && pnpm -r --filter !. pack"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "@stylistic/eslint-plugin": "^5.4.0",
     "@types/node": "catalog:",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@vitest/ui": "3.2.4",
     "eslint": "^9.36.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unicorn": "^61.0.2",
