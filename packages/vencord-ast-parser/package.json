@@ -2,12 +2,18 @@
   "name": "@vencord-companion/vencord-ast-parser",
   "version": "1.0.0",
   "description": "",
+  "author": {
+     "name": "sadan",
+     "url": "https://sadan.zip"
+  },
   "main": "index.js",
+  "exports": {
+    "./*": "./dist/*.js"
+  },
   "scripts": {
     "test": "vitest"
   },
   "keywords": [],
-  "author": "",
   "license": "LGPL-3.0-or-later",
   "packageManager": "pnpm@10.15.0",
   "peerDependencies": {

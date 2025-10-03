@@ -12,7 +12,10 @@
     "build": "tsc -b"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "sadan",
+    "url": "https://sadan.zip"
+  },
   "license": "LGPL-3.0-or-later",
   "packageManager": "pnpm@10.15.0",
   "devDependencies": {
