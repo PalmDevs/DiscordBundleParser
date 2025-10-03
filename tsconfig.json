@@ -14,9 +14,13 @@
         },
         {
             "path": "./tsconfig.scripts.json"
+        },
+        {
+            "path": "./tsconfig.test.json"
         }
     ],
+    "include": [],
     "exclude": [
         "node_modules",
-    ]
+    ],
 }

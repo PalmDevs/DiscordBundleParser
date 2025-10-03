@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "noEmit": true,
+        "lib": [
+            "ESNext"
+        ],
+    },
+    "references": [
+        {
+            "path": "packages/ast-parser"
+        },
+        {
+            "path": "packages/shared"
+        },
+        {
+            "path": "packages/vencord-ast-parser"
+        },
+        {
+            "path": "packages/webpack-ast-parser"
+        }
+    ],
+    "include": [
+        "packages/**/*.test.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

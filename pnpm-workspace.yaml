@@ -1,6 +1,7 @@
 packages:
   - ./packages/*
-
+hoist: true
+hoistWorkspacePackages: false
 catalog:
   '@sadan4/devtools-pretty-printer': 1.x
   '@types/node': 24.x

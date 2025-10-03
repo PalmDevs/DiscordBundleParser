@@ -2,13 +2,14 @@
     "compilerOptions": {
         "composite": true,
         "target": "esnext",
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "emitDeclarationOnly": true,
-        "outDir": "node_modules/.noEmit",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "noEmit": true,
         "lib": [
             "ESNext",
         ],
+        "preserveSymlinks": true,
+        "skipLibCheck": true,
     },
     "files": [
         "eslint.config.mts"
