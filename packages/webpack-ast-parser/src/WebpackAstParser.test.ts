@@ -503,6 +503,7 @@ describe("WebpackAstParser", function () {
         it("parses a direct call properly", function () {
             const parser = new WebpackAstParser(getFile("webpack/imports/directCall.js"));
             const test = parser.getUsesOfImport("999003", "foo3");
+
             expect(test).to.deep.equal([new Range(8, 29, 8, 33)]);
         });
         it("throws when wreq is not used", function () {
@@ -704,12 +705,11 @@ describe("WebpackAstParser", function () {
                 });
                 it("finds the module for a wreq call that has an export", async function () {
                     const parser = new WebpackAstParser(getFile(".modules/111111.js"));
-
                     const def = await parser.generateDefinitions(new Position(39, 30));
 
                     expect(def)
                         .toMatchSnapshot();
-                })
+                });
             });
         });
         describe("stores", function () {

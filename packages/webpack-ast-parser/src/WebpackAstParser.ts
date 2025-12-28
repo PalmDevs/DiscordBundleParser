@@ -376,6 +376,7 @@ export class WebpackAstParser extends AstParser {
             // i think probably not, no real need
             if (isCallExpression(requiredModule) && requiredModule.arguments.length === 1) {
                 const [arg] = requiredModule.arguments;
+
                 if (isNumericLiteral(arg)) {
                     moduleId = +arg.text;
                 }
