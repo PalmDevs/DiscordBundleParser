@@ -1,0 +1,35 @@
+{
+  "name": "@vencord-companion/global-env-parser",
+  "version": "0.0.3",
+  "description": "",
+  "author": {
+    "name": "sadan",
+    "url": "https://sadan.zip"
+  },
+  "main": "index.js",
+  "exports": {
+    "./*": "./dist/*.js",
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "preversion": "mkdir .git || :",
+    "bump": "npm version",
+    "postversion": "rmdir .git",
+    "build": "tsc -b"
+  },
+  "keywords": [],
+  "license": "LGPL-3.0-or-later",
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "@vencord-companion/ast-parser": "workspace:*",
+    "@vencord-companion/shared": "workspace:*"
+  },
+  "peerDependencies": {
+    "ts-api-utils": "catalog:",
+    "typescript": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

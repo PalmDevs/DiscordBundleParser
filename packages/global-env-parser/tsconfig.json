@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig/tsconfig.json",
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "types": ["node"]
+  },
+  "references": [
+    {
+      "path": "../ast-parser"
+    },
+    {
+      "path": "../shared"
+    }
+  ],
+  "include": ["src"]
+}
