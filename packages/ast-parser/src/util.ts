@@ -1,26 +1,48 @@
 import {
+    type AssignmentExpression,
+    type AssignmentOperatorToken,
+    type BinaryExpression,
     type Block,
     type DefaultKeyword,
     forEachChild,
     type Identifier,
     type ImportClause,
+    isArrowFunction,
+    isBigIntLiteral,
+    isBinaryExpression,
     isBlock,
+    isConstructorDeclaration,
+    isExpressionStatement,
+    isFunctionDeclaration,
+    isFunctionExpression,
+    isGetAccessorDeclaration,
     isIdentifier,
     isImportClause,
     isImportDeclaration,
     isImportSpecifier,
+    isJsxText,
+    isMethodDeclaration,
     isNamespaceImport as _TS_isNamespaceImport,
+    isNumericLiteral,
     isPropertyAccessExpression,
+    isRegularExpressionLiteral,
     isReturnStatement,
+    isSetAccessorDeclaration,
+    isStringLiteral,
+    isStringLiteralLike,
     isTokenKind,
+    isVariableDeclaration,
+    type LiteralToken,
     type NamespaceImport,
     type Node,
     type ObjectLiteralElementLike,
     type ObjectLiteralExpression,
+    type PlusToken,
     type PropertyAccessExpression,
     type SourceFile,
     SyntaxKind,
     type SyntaxList,
+    type VariableDeclaration,
 } from "typescript";
 
 import type { AnyFunction, AssertedType, CBAssertion, Functionish, Import, WithParent } from "./types";
@@ -303,7 +325,132 @@ function _findReturnPropertyAccessExpression(func: Block): PropertyAccessExpress
     return lastStatment.expression;
 }
 
-/* !
+export function tryParseStringOrNumberLiteral(node: Node | undefined): string | undefined {
+    if (!node)
+        return;
+    if (isStringLiteralLike(node) || isNumericLiteral(node)) {
+        return node.text;
+    }
+}
+
+export function isLiteralish(node: Node): node is LiteralToken {
+    return isStringLiteralLike(node)
+      || isNumericLiteral(node)
+      || isBigIntLiteral(node)
+      || isJsxText(node)
+      || isRegularExpressionLiteral(node);
+}
+
+export function isFunctionish(node: Node): node is Functionish {
+    return (
+        isFunctionDeclaration(node)
+        || isMethodDeclaration(node)
+        || isGetAccessorDeclaration(node)
+        || isSetAccessorDeclaration(node)
+        || isConstructorDeclaration(node)
+        || isFunctionExpression(node)
+        || isArrowFunction(node)
+
+    );
+}
+
+const DIRECTIVE_PREFIX = "use ";
+
+/**
+ * returns if the node is a directive
+ * ```ts
+ * "use strict"; // true
+ * "use something"; // true
+ * "not a directive"; // false
+ * 42; // false
+ * ```
+ */
+export function isDirective(node: Node): boolean {
+    if (!isExpressionStatement(node)) {
+        return false;
+    }
+
+    const { expression } = node;
+
+    if (!isStringLiteral(expression)) {
+        return false;
+    }
+
+    const { text } = expression;
+
+    if (text.length <= DIRECTIVE_PREFIX.length) {
+        return false;
+    }
+
+    return text.startsWith(DIRECTIVE_PREFIX);
+}
+
+const ASSIGNMENT_TOKENS: Partial<Record<SyntaxKind, true>> = {
+    [SyntaxKind.EqualsToken]: true,
+    [SyntaxKind.PlusEqualsToken]: true,
+    [SyntaxKind.MinusEqualsToken]: true,
+    [SyntaxKind.AsteriskAsteriskEqualsToken]: true,
+    [SyntaxKind.AsteriskEqualsToken]: true,
+    [SyntaxKind.SlashEqualsToken]: true,
+    [SyntaxKind.PercentEqualsToken]: true,
+    [SyntaxKind.AmpersandEqualsToken]: true,
+    [SyntaxKind.BarEqualsToken]: true,
+    [SyntaxKind.CaretEqualsToken]: true,
+    [SyntaxKind.LessThanLessThanEqualsToken]: true,
+    [SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken]: true,
+    [SyntaxKind.GreaterThanGreaterThanEqualsToken]: true,
+    [SyntaxKind.BarBarEqualsToken]: true,
+    [SyntaxKind.AmpersandAmpersandEqualsToken]: true,
+    [SyntaxKind.QuestionQuestionEqualsToken]: true,
+};
+
+export function isAssignmentExpression(node: Node | undefined):
+    node is AssignmentExpression<AssignmentOperatorToken> {
+    if (!node || !isBinaryExpression(node))
+        return false;
+
+    return ASSIGNMENT_TOKENS[node.operatorToken.kind] === true;
+}
+
+export function isVariableAssignmentLike(node: Node | undefined):
+    node is
+    | (
+      & Omit<VariableDeclaration, "name" | "initializer">
+      & {
+          name: Identifier;
+          initializer: Exclude<VariableDeclaration["initializer"], undefined>;
+      }
+    )
+    | (Omit<AssignmentExpression<AssignmentOperatorToken>, "left"> & { left: Identifier; }) {
+    if (!node)
+        return false;
+
+    if (isVariableDeclaration(node)) {
+        return isIdentifier(node.name) && !!node.initializer;
+    } else if (isBinaryExpression(node)) {
+        return isAssignmentExpression(node);
+    }
+    return false;
+}
+
+export function isBinaryPlusExpression(node: Node):
+    node is
+    & BinaryExpression
+    & {
+        readonly operatorToken: PlusToken;
+    } {
+    if (!isBinaryExpression(node)) {
+        return false;
+    }
+    if (node.operatorToken.kind !== SyntaxKind.PlusToken) {
+        return false;
+    }
+    return true;
+}
+
+
+/**
+ * @license MIT
  * taken from tsutils, license below
  * The MIT License (MIT)
  * 
@@ -328,6 +475,9 @@ function _findReturnPropertyAccessExpression(func: Block): PropertyAccessExpress
  * SOFTWARE.
  */
 
+// empty comment so the license doesn't become the doc comment for this func
+
+/***/
 export function getTokenAtPosition(
     parent: Node,
     pos: number,

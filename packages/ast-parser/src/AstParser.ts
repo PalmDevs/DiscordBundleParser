@@ -1,33 +1,15 @@
 import { Format } from "@sadan4/devtools-pretty-printer";
 import { collectVariableUsage, type VariableInfo } from "ts-api-utils";
 import {
-    type AssignmentExpression,
-    type AssignmentOperatorToken,
-    type CallExpression,
     createSourceFile,
     type Expression,
     type Identifier,
-    isArrowFunction,
-    isBigIntLiteral,
-    isBinaryExpression,
-    isConstructorDeclaration,
-    isFunctionDeclaration,
-    isFunctionExpression,
     isFunctionLike,
-    isGetAccessorDeclaration,
-    isIdentifier,
-    isJsxText,
     isLeftHandSideExpression,
-    isMethodDeclaration,
-    isNumericLiteral,
     isPropertyAccessExpression,
-    isRegularExpressionLiteral,
-    isSetAccessorDeclaration,
-    isStringLiteralLike,
     isVariableDeclaration,
     isVariableDeclarationList,
     type LeftHandSideExpression,
-    type LiteralToken,
     type MemberName,
     type Node,
     type PropertyAccessExpression,
@@ -36,7 +18,6 @@ import {
     ScriptTarget,
     type SourceFile,
     SyntaxKind,
-    type VariableDeclaration,
 } from "typescript";
 
 import { Cache, CacheGetter } from "@vencord-companion/shared/decorators";
@@ -46,7 +27,7 @@ import { Range } from "@vencord-companion/shared/Range";
 
 import type { StringifiedModule } from "./StringifiedModule";
 import type { Functionish } from "./types";
-import { CharCode, findParent, getTokenAtPosition, isEOL } from "./util";
+import { CharCode, findParent, getTokenAtPosition, isAssignmentExpression, isEOL } from "./util";
 
 let logger: Logger = NoopLogger;
 
@@ -156,10 +137,6 @@ export class AstParser {
         logger.debug("[AstParser] Failed finding variable declaration");
     }
 
-    public isCallExpression(node: Node | undefined): node is CallExpression {
-        return node?.kind === SyntaxKind.CallExpression;
-    }
-
     /**
      * Used for interop with other systems
      */
@@ -186,54 +163,6 @@ export class AstParser {
         if (!isVariableDeclaration(dec))
             return;
         return dec.initializer;
-    }
-
-    public isVariableAssignmentLike(node: Node | undefined):
-    node is
-    | (
-      & Omit<VariableDeclaration, "name" | "initializer">
-      & {
-          name: Identifier;
-          initializer: Exclude<VariableDeclaration["initializer"], undefined>;
-      }
-    )
-    | (Omit<AssignmentExpression<AssignmentOperatorToken>, "left"> & { left: Identifier; }) {
-        if (!node)
-            return false;
-
-        if (isVariableDeclaration(node)) {
-            return isIdentifier(node.name) && !!node.initializer;
-        } else if (isBinaryExpression(node)) {
-            return this.isAssignmentExpression(node);
-        }
-        return false;
-    }
-
-    private static AssignmentTokens: Partial<Record<SyntaxKind, true>> = {
-        [SyntaxKind.EqualsToken]: true,
-        [SyntaxKind.PlusEqualsToken]: true,
-        [SyntaxKind.MinusEqualsToken]: true,
-        [SyntaxKind.AsteriskAsteriskEqualsToken]: true,
-        [SyntaxKind.AsteriskEqualsToken]: true,
-        [SyntaxKind.SlashEqualsToken]: true,
-        [SyntaxKind.PercentEqualsToken]: true,
-        [SyntaxKind.AmpersandEqualsToken]: true,
-        [SyntaxKind.BarEqualsToken]: true,
-        [SyntaxKind.CaretEqualsToken]: true,
-        [SyntaxKind.LessThanLessThanEqualsToken]: true,
-        [SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken]: true,
-        [SyntaxKind.GreaterThanGreaterThanEqualsToken]: true,
-        [SyntaxKind.BarBarEqualsToken]: true,
-        [SyntaxKind.AmpersandAmpersandEqualsToken]: true,
-        [SyntaxKind.QuestionQuestionEqualsToken]: true,
-    };
-
-    public isAssignmentExpression(node: Node | undefined):
-     node is AssignmentExpression<AssignmentOperatorToken> {
-        if (!node || !isBinaryExpression(node))
-            return false;
-
-        return AstParser.AssignmentTokens[node.operatorToken.kind] === true;
     }
 
     /**
@@ -316,7 +245,7 @@ export class AstParser {
         let init: Expression | undefined;
 
         for (const { location } of uses) {
-            if (this.isAssignmentExpression(location.parent)) {
+            if (isAssignmentExpression(location.parent)) {
                 // filter out cases like `<some other thing> = location`
                 if (location.parent.left !== location) {
                     continue;
@@ -398,29 +327,6 @@ export class AstParser {
         return this.makeRangeFromAstNode(declarations[0]);
     }
 
-    public isLiteralish(node: Node): node is LiteralToken {
-        return isStringLiteralLike(node)
-          || isNumericLiteral(node)
-          || isBigIntLiteral(node)
-          || isJsxText(node)
-          || isRegularExpressionLiteral(node);
-    }
-
-    public isFunctionish(node: Node): node is Functionish {
-        return (
-            isFunctionDeclaration(node)
-            || isMethodDeclaration(node)
-            || isGetAccessorDeclaration(node)
-            || isSetAccessorDeclaration(node)
-            || isConstructorDeclaration(node)
-            || isFunctionExpression(node)
-            || isArrowFunction(node)
-        );
-    }
-
-    public isIdentifier(node: Node | undefined): node is Identifier {
-        return !!node && isIdentifier(node);
-    }
 
     /**
      * Converts the position to a zero-based offset.

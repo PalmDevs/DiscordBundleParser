@@ -45,7 +45,11 @@ import {
     findReturnIdentifier,
     findReturnPropertyAccessExpression,
     getLeadingIdentifier,
+    isAssignmentExpression,
+    isFunctionish,
+    isLiteralish,
     isSyntaxList,
+    isVariableAssignmentLike,
     lastParent,
     nonNull,
 } from "@vencord-companion/ast-parser";
@@ -479,7 +483,7 @@ export class WebpackAstParser extends AstParser {
             return;
         }
 
-        if (!this.isIdentifier(requiredModule))
+        if (!isIdentifier(requiredModule))
             return;
 
         const dec = this.getVarInfoFromUse(requiredModule);
@@ -556,7 +560,7 @@ export class WebpackAstParser extends AstParser {
 
         const [imported, ...chain] = this.flattenPropertyAccessExpression(last) ?? [];
 
-        if (!this.isIdentifier(imported) || chain.length === 0)
+        if (!imported || !isIdentifier(imported) || chain.length === 0)
             return;
 
         const importedId = this.getIdOfImportedVar(imported);
@@ -700,7 +704,7 @@ export class WebpackAstParser extends AstParser {
         // e.exports = n(moduleId);
 
         for (const { location: use } of this.uses!.uses) {
-            const assignment = findParent(use, this.isAssignmentExpression);
+            const assignment = findParent(use, isAssignmentExpression);
 
             if (!assignment) {
                 continue;
@@ -945,7 +949,7 @@ export class WebpackAstParser extends AstParser {
 
         const ret = findParent(uses?.location, isVariableDeclaration)?.name;
 
-        if (this.isIdentifier(ret))
+        if (ret && isIdentifier(ret))
             return ret;
     }
 
@@ -971,7 +975,7 @@ export class WebpackAstParser extends AstParser {
 
         const [id] = initExpr.arguments;
 
-        if (!this.isLiteralish(id)) {
+        if (!isLiteralish(id)) {
             logger.warn("id is not literalish");
             return;
         }
@@ -1190,7 +1194,7 @@ export class WebpackAstParser extends AstParser {
                 props.push([WebpackAstParser.SYM_CJS_DEFAULT, [node.getChildAt(0)]]);
 
             return fromEntries<RawExportMap>(props);
-        } else if (this.isLiteralish(node)) {
+        } else if (isLiteralish(node)) {
             return [node];
         } else if (isPropertyAssignment(node)) {
             const objRange = this.rawMakeExportMapRecursive(node.initializer);
@@ -1200,7 +1204,7 @@ export class WebpackAstParser extends AstParser {
             return {
                 [node.name.getText()]: objRange,
             };
-        } else if (this.isFunctionish(node)) {
+        } else if (isFunctionish(node)) {
             wrapperFuncCheck: {
                 if (!node.body)
                     break wrapperFuncCheck;
@@ -1256,7 +1260,7 @@ export class WebpackAstParser extends AstParser {
         }
         if (Array.isArray(map)) {
             return map.map((node) => {
-                if (this.isFunctionish(node) && !node.name) {
+                if (isFunctionish(node) && !node.name) {
                     return this.makeRangeFromAnonFunction(node);
                 }
                 return this.makeRangeFromAstNode(node);
@@ -1443,7 +1447,7 @@ export class WebpackAstParser extends AstParser {
         // find where it's set to the new store
         // there should never be more than one assignment
         const uses = allUses.filter((ident) => {
-            return this.isVariableAssignmentLike(ident.parent);
+            return isVariableAssignmentLike(ident.parent);
         });
 
         if (uses.length === 0) {
@@ -1461,7 +1465,7 @@ export class WebpackAstParser extends AstParser {
                     throw new Error("[WebpackAstParser] Variable declaration has no initializer, this should be filtered out by the previous isVariableAssignmentLike check");
                 }
                 return use.parent.initializer;
-            } else if (this.isAssignmentExpression(use.parent)) {
+            } else if (isAssignmentExpression(use.parent)) {
                 return use.parent.right;
             }
             throw new Error("Unexpected type for use, this should not happen");
@@ -1669,7 +1673,7 @@ export class WebpackAstParser extends AstParser {
 
             const valueInit = valueProp.initializer;
 
-            if (!this.isIdentifier(valueInit)) {
+            if (!isIdentifier(valueInit)) {
                 continue;
             }
 

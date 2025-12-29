@@ -24,6 +24,9 @@
         },
         {
             "path": "packages/webpack-ast-parser"
+        },
+        {
+            "path": "packages/webpack-chunk-parser"
         }
     ],
     "include": [
