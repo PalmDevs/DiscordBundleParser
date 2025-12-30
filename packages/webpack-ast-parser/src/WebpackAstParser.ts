@@ -2008,7 +2008,7 @@ export class WebpackAstParser extends AstParser {
         while ((cur = toSearch.pop())) {
             const [thisParser, moduleId, exportName] = cur;
             const moduleText = await this.moduleCache.getModuleFromNum(moduleId);
-            const otherParser = new WebpackAstParser(moduleText);
+            const otherParser = WebpackAstParser.withModule(moduleText, moduleId);
 
             if (!(thisParser.moduleId && otherParser.moduleId)) {
                 throw new Error("Module is is not set, this should not happen");
