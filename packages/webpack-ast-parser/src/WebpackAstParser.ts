@@ -1241,6 +1241,7 @@ export class WebpackAstParser extends AstParser {
         } else if (isIdentifier(node)) {
             const trail = this.unwrapVariableDeclaration(node);
 
+            // FIXME: !trail?.length
             if (!trail || trail.length === 0) {
                 logger.warn("Could not find variable declaration for identifier");
                 return [];
